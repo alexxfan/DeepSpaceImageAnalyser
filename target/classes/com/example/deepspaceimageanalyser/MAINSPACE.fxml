@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.deepspaceimageanalyser.ImageLoaderController">
+   <children>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="750.0">
+         <children>
+            <BorderPane prefHeight="700.0" prefWidth="750.0">
+               <center>
+                  <TabPane prefHeight="415.0" prefWidth="487.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                     <tabs>
+                        <Tab text="Normal">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="494.0" prefWidth="550.0">
+                                 <children>
+                                    <ImageView fx:id="regularImage" fitHeight="489.0" fitWidth="551.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Greyscale">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="blackAndWhiteImageView" fitHeight="492.0" fitWidth="549.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Red">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="redImage" fitHeight="489.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Green">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="greenImage" fitHeight="490.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Blue">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="blueImage" fitHeight="491.0" fitWidth="551.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Adjustable">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="adjustableImage" fitHeight="488.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+               </center>
+               <bottom>
+                  <VBox prefHeight="100.0" prefWidth="750.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Separator prefWidth="200.0" />
+                        <Label fx:id="description">
+                           <VBox.margin>
+                              <Insets left="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="imageWidth">
+                           <VBox.margin>
+                              <Insets left="20.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="imageHeight">
+                           <VBox.margin>
+                              <Insets left="20.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+               </bottom>
+               <left>
+                  <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox prefHeight="518.0" prefWidth="211.0">
+                           <children>
+                              <Label text="Choose your image">
+                                 <VBox.margin>
+                                    <Insets left="40.0" top="50.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="Load" mnemonicParsing="false" onAction="#getImage" text="Load">
+                                 <VBox.margin>
+                                    <Insets left="80.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <MenuButton fx:id="colourChoices" mnemonicParsing="false" text="Colour Choices">
+                                <items>
+                                  <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Black and White" />
+                                  <MenuItem fx:id="Red" mnemonicParsing="false" text="Red Scale" />
+                                    <MenuItem fx:id="Green" mnemonicParsing="false" text="Green Scale" />
+                                    <MenuItem fx:id="Blue" mnemonicParsing="false" text="Blue Scale" />
+                                    <MenuItem mnemonicParsing="false" text="Adjustable" />
+                                </items>
+                                 <VBox.margin>
+                                    <Insets left="40.0" top="50.0" />
+                                 </VBox.margin>
+                              </MenuButton>
+                              <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                                 <buttons>
+                                    <TextField promptText="Threshold" fx:id="thresh"/>
+                                    <Button fx:id="blackAndWhite1" mnemonicParsing="false" text="Set Threshold" onAction="#blackAndWhiteImg"/>
+                                 </buttons>
+                                 <VBox.margin>
+                                    <Insets top="30.0" />
+                                 </VBox.margin>
+                              </ButtonBar>
+                              <Button fx:id="Exit" mnemonicParsing="false" onAction="#exit" text="Exit">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="80.0" top="80.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                        </VBox>
+                        <Separator orientation="VERTICAL" prefHeight="518.0" prefWidth="8.0" />
+                     </children>
+                  </HBox>
+               </left>
+               <top>
+                  <VBox alignment="CENTER" prefHeight="118.0" prefWidth="750.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="110.0" prefWidth="426.0" text="Image Viewer" textAlignment="CENTER">
+                           <font>
+                              <Font size="64.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Label>
+                        <Separator prefHeight="0.0" prefWidth="750.0" />
+                     </children>
+                  </VBox>
+               </top>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
