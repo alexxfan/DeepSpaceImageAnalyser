@@ -34,38 +34,11 @@
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab text="Greyscale">
+                        <Tab text="Black and White">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ImageView fx:id="blackAndWhiteImageView" fitHeight="492.0" fitWidth="549.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Red">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ImageView fx:id="redImage" fitHeight="489.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Green">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ImageView fx:id="greenImage" fitHeight="490.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </Tab>
-                        <Tab text="Blue">
-                           <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <ImageView fx:id="blueImage" fitHeight="491.0" fitWidth="551.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -124,11 +97,11 @@
                               </Button>
                               <MenuButton fx:id="colourChoices" mnemonicParsing="false" text="Colour Choices">
                                 <items>
-                                  <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Black and White" />
-                                  <MenuItem fx:id="Red" mnemonicParsing="false" text="Red Scale" />
-                                    <MenuItem fx:id="Green" mnemonicParsing="false" text="Green Scale" />
-                                    <MenuItem fx:id="Blue" mnemonicParsing="false" text="Blue Scale" />
-                                    <MenuItem mnemonicParsing="false" text="Adjustable" />
+                                  <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
+                                  <MenuItem fx:id="Red" mnemonicParsing="false" text="blank" />
+                                    <MenuItem fx:id="Green" mnemonicParsing="false" text="blank" />
+                                    <MenuItem fx:id="Blue" mnemonicParsing="false" text="blank" />
+                                    <MenuItem mnemonicParsing="false" text="blank" />
                                 </items>
                                  <VBox.margin>
                                     <Insets left="40.0" top="50.0" />
