@@ -4,11 +4,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.scene.control.*;
-import javafx.scene.effect.Light;
 import javafx.scene.image.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -17,14 +14,20 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
+import static jdk.internal.org.jline.utils.AttributedStyle.BLACK;
+import static jdk.internal.org.jline.utils.AttributedStyle.WHITE;
+
 public class ImageLoaderController implements Initializable {
     FileChooser fileChooser = new FileChooser(); // file chooser
 
 
-    private int[] imageArray;
+    private int[][] pixelArray;
+    public int size;
+    public int[] sizeOfSet;
+    public int[] id;
+    public int sets;
     private int width;
     private int height;
-    private Color color;
 
     Hashtable<Integer, ArrayList<Integer>> hashTable;
 
@@ -35,13 +38,13 @@ public class ImageLoaderController implements Initializable {
     public Label Hue, Brightness, Saturation;
 
     @FXML
-    private Button Load, Exit, bW;
+    private Button Load, Exit, Threshold;
 
     @FXML
-    private MenuButton colourChoices;
+    private MenuButton choices;
 
     @FXML
-    private MenuItem blackAndWhite, Red, Green, Blue;
+    private MenuItem Random, Red, Green, Blue;
 
    @FXML
    public TextField thresh;
@@ -61,6 +64,62 @@ public class ImageLoaderController implements Initializable {
 
     }
 
+//    public int find(int[] a, int id) {
+//        return a[id] == id ? id : (a[id] = find(a, a[id])); //finding the root of id
+//    } // keeps recursively calling itself until the root is found
+
+    public int find(int p){
+        int parent = p;
+        while(parent != id[p]) parent = id[parent];
+
+        while (p != parent){
+            int goNext = id[p];
+            id[p] = parent;
+            p = goNext;
+
+        }
+        return parent;
+    }
+
+//    public void union(int[] a, int p, int q) { //merges two groups by connecting the root element of one group to the root element of another group
+//        a[find(a, q)] = find(a, p); //set the root of the group containing q to the root of the group containing p
+//    }
+
+    public void unionFind(int size){
+        if (size<=0) throw new IllegalArgumentException();
+
+        this.size = sets = size;
+        sizeOfSet = new int[size];
+        id = new int[size];
+
+        for(int i = 0; i < size; i++){
+            id[i] = i;
+            sizeOfSet[i] = 1;
+        }
+    }
+
+    public void unify(int a, int b){
+        int rootA = find(a);
+        int rootB = find(b);
+        if (rootA == rootB) return;
+
+        if(sizeOfSet[rootA] < sizeOfSet[rootB]){
+            sizeOfSet[rootB] += sizeOfSet[rootA];
+            id[rootA] = id[rootB];
+        }
+        else{
+            sizeOfSet[rootA] += sizeOfSet[rootB];
+            id[rootB] += id[rootA];
+        }
+        sets--;
+    }
+
+//    public void unionPixels(int a, int b) {
+//        if(find(pixelArray, a) < find(pixelArray, b))
+//            union(pixelArray, a, b);
+//        else union(pixelArray, b, a);
+//    }
+
     public WritableImage blackAndWhiteImg(ActionEvent actionEvent) {
 
         Image image = regularImage.getImage(); //get the chosen image from file explorer (regular imageview)
@@ -69,10 +128,9 @@ public class ImageLoaderController implements Initializable {
 
         width = (int) image.getWidth(); //get width of image
         height = (int) image.getHeight(); //get height of image
-        imageArray = new int[(height * width)];
+        pixelArray = new int [height][width];
 
         WritableImage blackAndWhiteImage = new WritableImage(width, height); //create a new WritableImage object with the same dimensions as the original image
-        PixelWriter pixelWriter = blackAndWhiteImage.getPixelWriter();
 
         //loop through each pixel of the original image
         for (int y = 0; y < height; y++) {
@@ -90,35 +148,38 @@ public class ImageLoaderController implements Initializable {
                 //determine whether the pixel should be white or black based on the luminance threshold
                 if (luminance >= luminanceThreshold) {
                     blackAndWhiteImage.getPixelWriter().setColor(x, y, Color.WHITE);
+                    pixelArray[y][x] = WHITE;
                 } else {
                     blackAndWhiteImage.getPixelWriter().setColor(x, y, Color.BLACK);
+                    pixelArray[y][x] = BLACK;
                 }
 
             }
         }
+        unionFind(height*width);
+
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                int currentPixel = pixelArray[y][x];
+                int currentIndex = y * width + x;
+
+                if (currentPixel == WHITE){
+                    if(x+1 < width && pixelArray[y][x + 1] == WHITE){
+                        int besideIndex = y * width * (x + 1);
+                        unify(currentIndex, besideIndex);
+                    }
+                    if (y + 1 > height && pixelArray[y + 1][x] == WHITE){
+                        int belowIndex = (y + 1) * width + x;
+                        unify(currentIndex, belowIndex);
+                    }
+                }
+            }
+        }
+
         blackAndWhiteImageView.setImage(blackAndWhiteImage); //set the grayImageView to display the new grayscale image
         return blackAndWhiteImage; //return the new grayscale image
     }
 
-
-
-    public int find(int[] a, int id) {
-        return a[id] == id ? id : (a[id] = find(a, a[id])); //finding the root of id
-    } // keeps recursively calling itself until the root is found
-
-    public void union(int[] a, int p, int q) { //merges two groups by connecting the root element of one group to the root element of another group
-        a[find(a, q)] = find(a, p); //set the root of the group containing q to the root of the group containing p
-    }
-
-    public void unionPixels(int a, int b) {
-        if(find(imageArray, a) < find(imageArray, b))
-            union(imageArray, a, b);
-        else union(imageArray, b, a);
-    }
-
-//    public boolean pixelsAreWhite(int i){
-//        return imageArray[i] != -1;
-//    }
 
     public WritableImage randomColorImg(ActionEvent actionEvent) {
 
@@ -127,10 +188,9 @@ public class ImageLoaderController implements Initializable {
 
         width = (int) image.getWidth(); //get width of image
         height = (int) image.getHeight(); //get height of image
-        imageArray = new int[(height * width)];
+        pixelArray = new int[height][width];
 
         WritableImage randomColorImage = new WritableImage(width, height); //create a new WritableImage object with the same dimensions as the original image
-        PixelWriter pixelWriter = randomColorImage.getPixelWriter();
 
         //loop through each pixel of the original image
         for (int y = 0; y < height; y++) {

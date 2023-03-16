@@ -95,9 +95,9 @@
                                     <Insets left="80.0" top="10.0" />
                                  </VBox.margin>
                               </Button>
-                              <MenuButton fx:id="colourChoices" mnemonicParsing="false" text="Colour Choices">
+                              <MenuButton fx:id="choices" mnemonicParsing="false" text="Colour Choices">
                                 <items>
-                                  <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
+                                  <MenuItem fx:id="Random" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
                                   <MenuItem fx:id="Red" mnemonicParsing="false" text="blank" />
                                     <MenuItem fx:id="Green" mnemonicParsing="false" text="blank" />
                                     <MenuItem fx:id="Blue" mnemonicParsing="false" text="blank" />
@@ -110,7 +110,7 @@
                               <ButtonBar prefHeight="40.0" prefWidth="200.0">
                                  <buttons>
                                     <TextField fx:id="thresh" promptText="Threshold" />
-                                    <Button fx:id="blackAndWhite1" mnemonicParsing="false" onAction="#blackAndWhiteImg" text="Set Threshold" />
+                                    <Button fx:id="Threshold" mnemonicParsing="false" onAction="#blackAndWhiteImg" text="Set Threshold" />
                                  </buttons>
                                  <VBox.margin>
                                     <Insets top="30.0" />

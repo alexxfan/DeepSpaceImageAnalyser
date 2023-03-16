@@ -13,4 +13,9 @@
       <module name="Deep space image analyser" target="17" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Deep space image analyser" options="--add-exports jdk.internal.le/jdk.internal.org.jline.utils=com.example.deepspaceimageanalyser" />
+    </option>
+  </component>
 </project>
