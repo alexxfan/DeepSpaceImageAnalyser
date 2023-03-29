@@ -175,53 +175,6 @@ public class ImageLoaderController implements Initializable {
     }
 
 
-
-//    public WritableImage randomColorImg(ActionEvent actionEvent) {
-//
-//        Image image = blackAndWhiteImageView.getImage(); //get the chosen image from the black image view
-//        PixelReader pixelReader = image.getPixelReader(); //initialize the pixel reader for the original image
-//
-//        width = (int) image.getWidth(); //get width of image
-//        height = (int) image.getHeight(); //get height of image
-//        pixelArray = new int[(height * width)];
-//
-//        if(width <= 0 || height <= 0){
-//            System.out.println("Error in image");
-//        }
-//        pixelArray = new int[(height * width)];
-//        Arrays.fill(pixelArray, -1); // initialize all pixels to -1
-//
-//        WritableImage randomColorImage = new WritableImage(width, height); //create a new WritableImage object with the same dimensions as the original image
-//        PixelWriter pixelWriter = randomColorImage.getPixelWriter();
-//
-//        //loop through each pixel of the original image
-//        for (int row = 0; row < height; row++) {
-//            for (int column = 0; column < width; column++) {
-//
-//                //get the red, green, and blue values of the current pixel
-//                double red = pixelReader.getColor(column, row).getRed();
-//                double green = pixelReader.getColor(column, row).getGreen();
-//                double blue = pixelReader.getColor(column, row).getBlue();
-//
-//                //calculate the luminance of the current pixel
-//                double luminance = (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
-//                double luminanceThreshold = Double.parseDouble(thresh.getText());
-//
-//                //determine whether the pixel should be coloured or black based on the luminance threshold
-//                if (luminance >= luminanceThreshold) {
-//                    //generate a random color for the current pixel
-//                    Color randomColor = Color.rgb((int) (Math.random() * 256), (int) (Math.random() * 256), (int) (Math.random() * 256));
-//                    randomColorImage.getPixelWriter().setColor(column, row, randomColor);
-//                } else {
-//                    randomColorImage.getPixelWriter().setColor(column, row, BLACK);
-//                }
-//
-//            }
-//        }
-//        blackAndWhiteImageView.setImage(randomColorImage); //set the grayImageView to display the new grayscale image
-//        return randomColorImage; //return the new colored image
-//    }
-
     public void randomColorImg(ActionEvent actionEvent) {
         Image blackAndWhiteImage = blackAndWhiteImageView.getImage(); // get black and white image
         PixelReader pixelReader = blackAndWhiteImage.getPixelReader(); // initialize pixel reader
