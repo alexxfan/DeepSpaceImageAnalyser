@@ -4,11 +4,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 
 import javafx.scene.paint.Color;
 
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -16,23 +19,23 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-import static javafx.scene.paint.Color.BLACK;
-import static javafx.scene.paint.Color.WHITE;
+import static javafx.scene.paint.Color.*;
 
 public class ImageLoaderController implements Initializable {
     FileChooser fileChooser = new FileChooser(); //file chooser
 
 
-    private int[] pixelArray;
+    public int[] pixelArray;
     private int width;
     private int height;
     private Color white, black;
     private WritableImage newBlackAndWhiteImage;
+    private WritableImage newRegularImage;
 
     HashMap<Integer, ArrayList<Integer>> hashMap;
 
     @FXML
-    public ImageView regularImage, blackAndWhiteImageView, redImage, greenImage, blueImage, adjustableImage;
+    public ImageView regularImage, blackAndWhiteImageView, adjustableImage;
 
     @FXML
     public Label Hue, Brightness, Saturation;
@@ -44,7 +47,7 @@ public class ImageLoaderController implements Initializable {
     private MenuButton colourChoices;
 
     @FXML
-    private MenuItem blackAndWhite, Red, Green, Blue;
+    private MenuItem blackAndWhite, circles, Green, Blue;
 
    @FXML
    public TextField thresh;
@@ -109,18 +112,18 @@ public class ImageLoaderController implements Initializable {
         }
         for(int row = 0; row < height; row++){
             for(int column = 0; column < width; column++){
-                int currentIndex = (row * width) + column;
-                int currentPixel = pixelArray[currentIndex]; //(row*column)];
+                int currentIndex = (row * width) + column; //calculate the index of the current pixel in the pixel array
+                int currentPixel = pixelArray[currentIndex]; //value of current pixel
 
-              if(currentPixel >= 0) {
-                  if(column + 1 < width && pixelArray[currentIndex + 1] >= 0 ) {
-                      int besideIndex = row * width + (column + 1);
-                      union(pixelArray,currentIndex, besideIndex);
+              if(currentPixel >= 0) { //if the pixel is not black
+                  if(column + 1 < width && pixelArray[currentIndex + 1] >= 0 ) { //if pixel on right isn't black
+                      int besideIndex = row * width + (column + 1); //calculate index of pixel
+                      union(pixelArray,currentIndex, besideIndex); //union the pixels
                   }
 
-                  if(row + 1 < height && pixelArray[currentIndex + width] >= 0){
-                      int belowIndex = (row + 1) * width + column;
-                      union(pixelArray,currentIndex, belowIndex);
+                  if(row + 1 < height && pixelArray[currentIndex + width] >= 0){ //if pixel below isn't black
+                      int belowIndex = (row + 1) * width + column; //calculate index of pixel
+                      union(pixelArray,currentIndex, belowIndex); //union the pixels
                   }
               }
             }
@@ -131,16 +134,16 @@ public class ImageLoaderController implements Initializable {
 
         for(int row = 0; row < height; row++){
             for(int column = 0; column < width; column++){
-                int colour = pixelArray[((row*width)+column)];
+                int colour = pixelArray[((row*width)+column)]; //value of pixel
 
-                if(colour >= 0){
+                if(colour >= 0){ //if the pixel isn't black / -1
                     int index = (row * width) + column;
-                    int root = find(pixelArray, index);
+                    int root = find(pixelArray, index); //find root containing the pixel
 
-                    if(!hashMap.containsKey(root)){
-                        hashMap.put(root, new ArrayList<>());
+                    if(!hashMap.containsKey(root)){ //if the root is not already saved into the hashMap
+                        hashMap.put(root, new ArrayList<>()); //create an array list for this root
                     }
-                    hashMap.get(root).add(index);
+                    hashMap.get(root).add(index); //add the pixel to the array list made for the root
                 }
             }
         }
@@ -176,10 +179,10 @@ public class ImageLoaderController implements Initializable {
 
 
     public void randomColorImg(ActionEvent actionEvent) {
-        Image blackAndWhiteImage = blackAndWhiteImageView.getImage(); // get black and white image
-        PixelReader pixelReader = blackAndWhiteImage.getPixelReader(); // initialize pixel reader
+        Image blackAndWhiteImage = blackAndWhiteImageView.getImage(); //get black and white image
+        PixelReader pixelReader = blackAndWhiteImage.getPixelReader(); //initialize pixel reader
 
-        WritableImage randomColorImage = new WritableImage(width, height); // create a new WritableImage object with the same dimensions as the original image
+        WritableImage randomColorImage = new WritableImage(width, height); //WritableImage object with the same dimensions as the original image
         PixelWriter pixelWriter = randomColorImage.getPixelWriter();
 
         //loops through each pixel of the black and white image
@@ -189,7 +192,7 @@ public class ImageLoaderController implements Initializable {
                 int root = find(pixelArray, index); //gets the root index of current disjoint set
 
                 if (!hashMap.containsKey(root)){
-                    pixelWriter.setColor(column, row, BLACK);
+                    pixelWriter.setColor(column, row, BLACK); //if the hashmap does not contain the root, make the pixel black
                 }
             }
         }
@@ -217,9 +220,68 @@ public class ImageLoaderController implements Initializable {
                     }
                 }
             }
-            adjustableImage.setImage(randomColorImage); // set the adjustableImage to display the new image
+            adjustableImage.setImage(randomColorImage); //set the adjustableImage to display the new image
         }
     }
+
+    public void circleDisjointSets(ActionEvent actionEvent) {
+        //gets the black and white image from the previous method
+        WritableImage blackAndWhiteImage = newBlackAndWhiteImage;
+
+        //create a canvas from the black and white image
+        Canvas canvas = new Canvas(blackAndWhiteImage.getWidth(), blackAndWhiteImage.getHeight());
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.drawImage(blackAndWhiteImage, 0, 0);
+
+        //find the disjoint sets of white pixels (stars)
+        for(int row = 0; row < height; row++){
+            for(int column = 0; column < width; column++){
+                int colour = pixelArray[((row*width)+column)];
+
+                if(colour >= 0){
+                    int index = (row * width) + column;
+                    int root = find(pixelArray, index);
+
+                    if(!hashMap.containsKey(root)){
+                        hashMap.put(root, new ArrayList<>());
+                    }
+                    hashMap.get(root).add(index);
+                }
+            }
+        }
+
+        //circle each star / disjoint set
+        for(List<Integer> set : hashMap.values()) {
+            graphicsContext.setStroke(Color.BLUE); //make circles blue
+            graphicsContext.setLineWidth(2);
+            graphicsContext.setFill(Color.TRANSPARENT); //make inside of circle transparent
+
+            //calculate the radius of the circle based on the size of the set
+            int radius = (int) Math.sqrt(set.size());
+
+            //find the center of the set
+            int centerX = 0, centerY = 0;
+            for (int index : set) {
+                int x = index % width;
+                int y = index / width;
+                centerX += x;
+                centerY += y;
+            }
+            centerX /= set.size();
+            centerY /= set.size();
+
+            //draw the circle at the center of the disjoint set
+            graphicsContext.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+        }
+
+        WritableImage outputImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
+        canvas.snapshot(null, outputImage);
+
+        blackAndWhiteImageView.setImage(outputImage);
+    }
+
+
+
 
 
     public void exit(ActionEvent actionEvent){

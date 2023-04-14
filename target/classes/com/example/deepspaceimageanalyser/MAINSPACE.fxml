@@ -98,7 +98,7 @@
                               <MenuButton fx:id="colourChoices" mnemonicParsing="false" text="Colour Choices">
                                 <items>
                                   <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
-                                  <MenuItem fx:id="Red" mnemonicParsing="false" text="blank" />
+                                  <MenuItem fx:id="circles" mnemonicParsing="false" text="blank" onAction="#circleDisjointSets"/>
                                     <MenuItem fx:id="Green" mnemonicParsing="false" text="blank" />
                                     <MenuItem fx:id="Blue" mnemonicParsing="false" text="blank" />
                                     <MenuItem mnemonicParsing="false" text="blank" />
