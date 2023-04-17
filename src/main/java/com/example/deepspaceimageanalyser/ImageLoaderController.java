@@ -38,7 +38,7 @@ public class ImageLoaderController implements Initializable {
     public ImageView regularImage, blackAndWhiteImageView, adjustableImage;
 
     @FXML
-    public Label Hue, Brightness, Saturation;
+    public Label Hue, Brightness, Saturation, Stars;
 
     @FXML
     private Button Load, Exit, bW;
@@ -251,6 +251,7 @@ public class ImageLoaderController implements Initializable {
         }
 
         //circle each star / disjoint set
+        int starCount = 0;
         for(List<Integer> set : hashMap.values()) {
             graphicsContext.setStroke(Color.BLUE); //make circles blue
             graphicsContext.setLineWidth(2);
@@ -272,14 +273,15 @@ public class ImageLoaderController implements Initializable {
 
             //draw the circle at the center of the disjoint set
             graphicsContext.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+            starCount++;
         }
 
         WritableImage outputImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
         canvas.snapshot(null, outputImage);
+        Stars.setText("Number of Stars: " + Integer.toString(starCount));
 
         blackAndWhiteImageView.setImage(outputImage);
     }
-
 
 
 
