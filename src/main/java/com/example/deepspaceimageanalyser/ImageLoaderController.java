@@ -9,9 +9,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -28,26 +30,25 @@ public class ImageLoaderController implements Initializable {
     public int[] pixelArray;
     private int width;
     private int height;
-    private Color white, black;
     private WritableImage newBlackAndWhiteImage;
-    private WritableImage newRegularImage;
+
 
     HashMap<Integer, ArrayList<Integer>> hashMap;
 
     @FXML
-    public ImageView regularImage, blackAndWhiteImageView, adjustableImage;
+    public ImageView regularImage, blackAndWhiteImageView, adjustableImage, Label;
 
     @FXML
-    public Label Hue, Brightness, Saturation, Stars;
+    public Label Stars;
 
     @FXML
     private Button Load, Exit, bW;
 
     @FXML
-    private MenuButton colourChoices;
+    private MenuButton options;
 
     @FXML
-    private MenuItem blackAndWhite, circles, Green, Blue;
+    private MenuItem randomColour, circles, circleAndLabel;
 
    @FXML
    public TextField thresh;
@@ -151,10 +152,14 @@ public class ImageLoaderController implements Initializable {
         int largestRoot = Collections.max(hashMap.keySet(),(a, b)-> hashMap.get(a).size() - hashMap.get(b).size());
         List list = hashMap.get(largestRoot);
 
+        countCelestialObjects();
 //        displayPixelArray();
         return newBlackAndWhiteImage;
 
     }
+
+
+
 
 //    public void displayPixelArray() {
 //        for(int i=0;i<pixelArray.length;i++)
@@ -176,6 +181,7 @@ public class ImageLoaderController implements Initializable {
     public void union(int[] a, int p, int q) { //merges two groups by connecting the root element of one group to the root element of another group
         a[find(a, q)] = find(a, p); //set the root of the group containing q to the root of the group containing p
     }
+
 
 
     public void randomColorImg(ActionEvent actionEvent) {
@@ -250,12 +256,89 @@ public class ImageLoaderController implements Initializable {
             }
         }
 
+
         //circle each star / disjoint set
         int starCount = 0;
-        for(List<Integer> set : hashMap.values()) {
+        for (List<Integer> set : hashMap.values()) {
             graphicsContext.setStroke(Color.BLUE); //make circles blue
             graphicsContext.setLineWidth(2);
             graphicsContext.setFill(Color.TRANSPARENT); //make inside of circle transparent
+
+
+            //calculate the radius of the circle based on the size of the set
+            int radius = (int) Math.sqrt(set.size());
+
+            //find the center of the set
+            int centerX = 0, centerY = 0;
+            for (int index : set) {
+                int x = index % width;
+                int y = index / width;
+                centerX += x;
+                centerY += y;
+
+            }
+            centerX /= set.size();
+            centerY /= set.size();
+
+            //draw the circle at the center of the disjoint set
+            graphicsContext.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+            starCount++;
+        }
+
+        WritableImage outputImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+        canvas.snapshot(null, outputImage);
+        Stars.setText("Number of Stars: " + Integer.toString(starCount));
+
+        blackAndWhiteImageView.setImage(outputImage);
+
+    }
+
+    public void circleAndLableDisjointSets(ActionEvent actionEvent) {
+        //gets the black and white image from the previous method
+        WritableImage blackAndWhiteImage = newBlackAndWhiteImage;
+
+
+        //create a canvas from the black and white image
+        Canvas canvas = new Canvas(blackAndWhiteImage.getWidth(), blackAndWhiteImage.getHeight());
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.drawImage(blackAndWhiteImage, 0, 0);
+
+        //find the disjoint sets of white pixels (stars)
+        for(int row = 0; row < height; row++){
+            for(int column = 0; column < width; column++){
+                int colour = pixelArray[((row*width)+column)];
+
+                if(colour >= 0){
+                    int index = (row * width) + column;
+                    int root = find(pixelArray, index);
+
+                    if(!hashMap.containsKey(root)){
+                        hashMap.put(root, new ArrayList<>());
+                    }
+                    hashMap.get(root).add(index);
+                }
+            }
+        }
+
+        double scaleOfX = blackAndWhiteImageView.getBoundsInParent().getWidth() / blackAndWhiteImage.getWidth();
+        double scaleOfY = blackAndWhiteImageView.getBoundsInParent().getHeight() / blackAndWhiteImage.getHeight();
+        double Scale = Math.min(scaleOfX, scaleOfY);
+
+        // Sort the disjoint sets by their size in decreasing order
+        List<List<Integer>> sets = new ArrayList<>(hashMap.values());
+        sets.sort((a, b) -> b.size() - a.size());
+
+        //circle each star / disjoint set
+        int starCount = 0;
+        int count = 0;
+        boolean[] setDrawn = new boolean[hashMap.size()]; //boolean array to keep track of which sets have been drawn
+
+        for (List<Integer> set : sets) {
+            graphicsContext.setStroke(Color.BLUE); //make circles blue
+            graphicsContext.setLineWidth(2);
+            graphicsContext.setFill(Color.TRANSPARENT); //make inside of circle transparent
+
+            count++;
 
             //calculate the radius of the circle based on the size of the set
             int radius = (int) Math.sqrt(set.size());
@@ -268,22 +351,74 @@ public class ImageLoaderController implements Initializable {
                 centerX += x;
                 centerY += y;
             }
+
             centerX /= set.size();
             centerY /= set.size();
 
             //draw the circle at the center of the disjoint set
             graphicsContext.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+
+            graphicsContext.setFont(Font.font("Times New Roman", FontWeight.NORMAL, 28)); //set font size to 28, style to times new roman
+            graphicsContext.setStroke(RED); //make font red
+            graphicsContext.setLineWidth(2);
+            graphicsContext.strokeText(Integer.toString(count), centerX + radius, centerY);
+
+
             starCount++;
         }
 
-        WritableImage outputImage = new WritableImage((int)canvas.getWidth(), (int)canvas.getHeight());
-        canvas.snapshot(null, outputImage);
-        Stars.setText("Number of Stars: " + Integer.toString(starCount));
+        WritableImage labeledImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+        canvas.snapshot(null, labeledImage);
 
-        blackAndWhiteImageView.setImage(outputImage);
+        Label.setImage(labeledImage);
     }
 
 
+
+    public void countCelestialObjects() {
+        //gets the black and white image from the previous method
+        WritableImage blackAndWhiteImage = newBlackAndWhiteImage;
+
+        //create a canvas from the black and white image
+        Canvas canvas = new Canvas(blackAndWhiteImage.getWidth(), blackAndWhiteImage.getHeight());
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.drawImage(blackAndWhiteImage, 0, 0);
+
+        //find the disjoint sets of white pixels
+        int[] pixelArray = new int[(int) (blackAndWhiteImage.getWidth() * blackAndWhiteImage.getHeight())];
+        blackAndWhiteImage.getPixelReader().getPixels(0, 0, (int) blackAndWhiteImage.getWidth(), (int) blackAndWhiteImage.getHeight(), PixelFormat.getIntArgbInstance(), pixelArray, 0, (int) blackAndWhiteImage.getWidth());
+        int width = (int) blackAndWhiteImage.getWidth();
+        int height = (int) blackAndWhiteImage.getHeight();
+
+        for (int row = 0; row < height; row++) {
+            for (int column = 0; column < width; column++) {
+                int colour = pixelArray[((row * width) + column)];
+                if (colour >= 0) { //if colour isn't black
+                    int index = (row * width) + column;
+                    int root = find(pixelArray, index);
+                    if (!hashMap.containsKey(root)) {
+                        hashMap.put(root, new ArrayList<>());
+                    }
+                    hashMap.get(root).add(index);
+                }
+            }
+        }
+
+        //this creates a list to save the sets of white pixels in the hashMap created at the start
+        List<List<Integer>> setsList = new ArrayList<>(hashMap.values());
+
+        //this sort the list of sets by size from biggest star to smallest
+        setsList.sort((set1, set2) -> Integer.compare(set2.size(), set1.size()));
+
+        //this labels and prints each disjoint/star set along with its size in pixel units in the console
+        int i = 1;
+        for (List<Integer> set : setsList) {
+            int size = set.size();
+            System.out.println("Size of disjoint set " + i + ": " + size + " pixels");
+            i++;
+        }
+
+    }
 
 
     public void exit(ActionEvent actionEvent){

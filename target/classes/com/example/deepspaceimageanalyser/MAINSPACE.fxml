@@ -43,11 +43,20 @@
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab text="Adjustable">
+                        <Tab text="Random Colour">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <ImageView fx:id="adjustableImage" fitHeight="488.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab text="Circle + Label">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ImageView fx:id="Label" fitHeight="492.0" fitWidth="549.0" pickOnBounds="true" preserveRatio="true" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -59,17 +68,7 @@
                   <VBox prefHeight="102.0" prefWidth="750.0" BorderPane.alignment="CENTER">
                      <children>
                         <Separator prefWidth="200.0" />
-                        <Label fx:id="Hue">
-                           <VBox.margin>
-                              <Insets left="20.0" />
-                           </VBox.margin>
-                        </Label>
                         <Label fx:id="Stars">
-                           <VBox.margin>
-                              <Insets left="20.0" top="5.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="Brightness">
                            <VBox.margin>
                               <Insets left="20.0" top="5.0" />
                            </VBox.margin>
@@ -95,13 +94,11 @@
                                     <Insets left="80.0" top="10.0" />
                                  </VBox.margin>
                               </Button>
-                              <MenuButton fx:id="colourChoices" mnemonicParsing="false" text="Colour Choices">
+                              <MenuButton fx:id="options" mnemonicParsing="false" text="Colour Choices">
                                 <items>
-                                  <MenuItem fx:id="blackAndWhite" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
+                                  <MenuItem fx:id="randomColour" mnemonicParsing="false" text="Randomly Colour" onAction="#randomColorImg"/>
                                   <MenuItem fx:id="circles" mnemonicParsing="false" text="Circles" onAction="#circleDisjointSets"/>
-                                    <MenuItem fx:id="Green" mnemonicParsing="false" text="blank" />
-                                    <MenuItem fx:id="Blue" mnemonicParsing="false" text="blank" />
-                                    <MenuItem mnemonicParsing="false" text="blank" />
+                                   <MenuItem fx:id="circleAndLabel" mnemonicParsing="false" text="Circle and Label" onAction="#circleAndLableDisjointSets"/>
                                 </items>
                                  <VBox.margin>
                                     <Insets left="40.0" top="50.0" />
