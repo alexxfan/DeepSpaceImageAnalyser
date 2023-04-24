@@ -151,13 +151,10 @@ public class ImageLoaderController implements Initializable {
         int largestRoot = Collections.max(hashMap.keySet(),(a, b)-> hashMap.get(a).size() - hashMap.get(b).size());
         List list = hashMap.get(largestRoot);
 
-        countCelestialObjects();
 //        displayPixelArray();
         return newBlackAndWhiteImage;
 
     }
-
-
 
 
 //    public void displayPixelArray() {
@@ -165,12 +162,11 @@ public class ImageLoaderController implements Initializable {
 //            System.out.print(find(pixelArray,i) + ((i+1)%width==0 ? "\n" : " "));
 //    }
 
-    public void unionPixels(int a, int b) {
-        if(find(pixelArray, a) < find(pixelArray, b))
-            union(pixelArray, a, b);
-        else union(pixelArray, b, a);
-    }
-
+//    public void unionPixels(int a, int b) {
+//        if(find(pixelArray, a) < find(pixelArray, b))
+//            union(pixelArray, a, b);
+//        else union(pixelArray, b, a);
+//    }
 
     public int find(int[] a, int id) {
         if(a[id]==-1) return -1;
@@ -180,7 +176,6 @@ public class ImageLoaderController implements Initializable {
     public void union(int[] a, int p, int q) { //merges two groups by connecting the root element of one group to the root element of another group
         a[find(a, q)] = find(a, p); //set the root of the group containing q to the root of the group containing p
     }
-
 
 
     public void randomColorImg(ActionEvent actionEvent) {
@@ -243,11 +238,11 @@ public class ImageLoaderController implements Initializable {
             for(int column = 0; column < width; column++){
                 int colour = pixelArray[((row*width)+column)];
 
-                if(colour >= 0){
+                if(colour >= 0){ //if the colour isn't black
                     int index = (row * width) + column;
                     int root = find(pixelArray, index);
 
-                    if(!hashMap.containsKey(root)){
+                    if(!hashMap.containsKey(root)){ //if hashmap doesn't contain root, add it to a new arraylist
                         hashMap.put(root, new ArrayList<>());
                     }
                     hashMap.get(root).add(index);
@@ -258,7 +253,7 @@ public class ImageLoaderController implements Initializable {
 
         //circle each star / disjoint set
         int starCount = 0;
-        for (List<Integer> set : hashMap.values()) {
+        for (List<Integer> set : hashMap.values()){ //iterate through the hash table
             graphicsContext.setStroke(Color.BLUE); //make circles blue
             graphicsContext.setLineWidth(2);
             graphicsContext.setFill(Color.TRANSPARENT); //make inside of circle transparent
@@ -307,7 +302,7 @@ public class ImageLoaderController implements Initializable {
             for(int column = 0; column < width; column++){
                 int colour = pixelArray[((row*width)+column)];
 
-                if(colour >= 0){
+                if(colour >= 0){ //if colour isn't black
                     int index = (row * width) + column;
                     int root = find(pixelArray, index);
 
@@ -319,18 +314,13 @@ public class ImageLoaderController implements Initializable {
             }
         }
 
-        double scaleOfX = blackAndWhiteImageView.getBoundsInParent().getWidth() / blackAndWhiteImage.getWidth();
-        double scaleOfY = blackAndWhiteImageView.getBoundsInParent().getHeight() / blackAndWhiteImage.getHeight();
-        double Scale = Math.min(scaleOfX, scaleOfY);
 
         // Sort the disjoint sets by their size in decreasing order
         List<List<Integer>> sets = new ArrayList<>(hashMap.values());
         sets.sort((a, b) -> b.size() - a.size());
 
         //circle each star / disjoint set
-        int starCount = 0;
         int count = 0;
-        boolean[] setDrawn = new boolean[hashMap.size()]; //boolean array to keep track of which sets have been drawn
 
         for (List<Integer> set : sets) {
             graphicsContext.setStroke(Color.BLUE); //make circles blue
@@ -362,13 +352,12 @@ public class ImageLoaderController implements Initializable {
             graphicsContext.setLineWidth(2);
             graphicsContext.strokeText(Integer.toString(count), centerX + radius, centerY);
 
-
-            starCount++;
         }
 
         WritableImage labeledImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
         canvas.snapshot(null, labeledImage);
 
+        countCelestialObjects();
         Label.setImage(labeledImage);
     }
 
@@ -404,14 +393,14 @@ public class ImageLoaderController implements Initializable {
         }
 
         //this creates a list to save the sets of white pixels in the hashMap created at the start
-        List<List<Integer>> setsList = new ArrayList<>(hashMap.values());
+        List<List<Integer>> starList = new ArrayList<>(hashMap.values());
 
-        //this sort the list of sets by size from biggest star to smallest
-        setsList.sort((set1, set2) -> Integer.compare(set2.size(), set1.size()));
+        //this sorts the list of sets by size from biggest star to smallest
+        starList.sort((set1, set2) -> Integer.compare(set2.size(), set1.size()));
 
         //this labels and prints each disjoint/star set along with its size in pixel units in the console
         int i = 1;
-        for (List<Integer> set : setsList) {
+        for (List<Integer> set : starList) {
             int size = set.size();
             System.out.println("Size of disjoint set " + i + ": " + size + " pixels");
             i++;
