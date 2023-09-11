@@ -13,4 +13,11 @@ This JavaFX application analyzes deep space images, identifying and estimating c
 - Image noise reduction and outlier management.
 - Interactive JavaFX GUI for user interaction.
 
+- ## Setting up
 
+To run the Deep Space Image Analyser application:
+
+   ```bash
+   git clone https://github.com/alexxfan/DeepSpaceImageAnalyser.git
+   cd DeepSpaceImageAnalyser
+   java -jar target/DeepSpaceImageAnalyser.jar
