@@ -20,4 +20,5 @@ To run the Deep Space Image Analyser application:
    ```bash
    git clone https://github.com/alexxfan/DeepSpaceImageAnalyser.git
    cd DeepSpaceImageAnalyser
+   mvnw clean verify build
    java -jar target/DeepSpaceImageAnalyser.jar
